@@ -6,23 +6,138 @@
   <script id="challenge">
     // 👉 CHALLENGE 1
     function profileActivation(profile, reason) {
-
+    // Check if the profile is currently active
+    if (profile.active) {
+        // If no reason is provided, return "confirm status manually"
+        if (!reason) {
+            return "confirm status manually";
+        }
+        // If reason is provided, set the profile to inactive and assign the reason
+        profile.active = false;
+        profile.reason = reason;
+    } else {
+        // If the profile is inactive, set it to active and remove the reason property
+        profile.active = true;
+        delete profile.reason;
     }
+    
+    return profile;
+}
+
+// Example 1: Activating a Profile
+let testProfile1 = {
+    active: false,
+    reason: "Not logged in for 30 days"
+};
+let result1 = profileActivation(testProfile1);
+console.log(result1); // { active: true }
+
+// Example 2: Deactivating a Profile
+let testProfile2 = {
+    active: true,
+    reason: undefined
+};
+let result2 = profileActivation(testProfile2, "Not logged in for 30 days");
+console.log(result2); // { active: false, reason: "Not logged in for 30 days" }
+
+// Example 3: Missing Reason on Active Profile
+let testProfile3 = {
+    active: true,
+    reason: undefined
+};
+let result3 = profileActivation(testProfile3);
+console.log(result3); // "confirm status manually"
+
 
     // 👉 CHALLENGE 2
     function mineSweeper(grid, x, y) {
-
+    // Check if x or y is out of bounds
+    if (x < 1 || x > 3 || y < 1 || y > 3) {
+        return "invalid coordinates";
     }
+
+    // Convert coordinates to zero-based indexing
+    const row = y - 1;
+    const col = x - 1;
+
+    // Get the value at the specified coordinates
+    const cellValue = grid[row][col];
+
+    // Determine the result based on the cell value
+    if (cellValue === "🟥") {
+        return "🟥 💀";
+    } else if (cellValue === "🟦") {
+        return "🟦 🥳";
+    }
+}
+
+
 
     // 👉 CHALLENGE 3
     function booleanize(obj) {
+    // Loop over each property in the object
+    for (let prop in obj) {
+        // Check if property name exceeds 9 characters
+        if (prop.length > 9) {
+            return "shorten all prop names to 9 chars or less";
+        }
 
+        // Transform value based on requirements
+        if (obj[prop] === 0) {
+            obj[prop] = false;
+        } else if (obj[prop] === 1) {
+            obj[prop] = true;
+        } else if (obj[prop] === null) {
+            // Delete key-value pair if value is null
+            delete obj[prop];
+        }
     }
+
+    return obj;
+}
+
+// Example usage:
+let obj = {
+    longPropertyName: 1,
+    shortProp: 0,
+    nullValue: null
+};
+
+let result = booleanize(obj);
+console.log(result);
+
 
     // 👉 CHALLENGE 4
     function scrub(text, forbidden) {
-
+    // Check if text is empty or there are no forbidden words
+    if (!text || forbidden.length === 0) {
+        return text;
     }
+
+    // Split text into an array of words
+    let words = text.split(/\s+/);
+
+    // Iterate over each word in the text
+    for (let i = 0; i < words.length; i++) {
+        // Remove punctuation from the word
+        let word = words[i].replace(/[^\w\s]/g, '');
+
+        // Check if the word is in the forbidden list
+        if (forbidden.includes(word.toLowerCase())) {
+            // Replace the word with 'x' characters of equal length
+            words[i] = 'x'.repeat(word.length);
+        }
+    }
+
+    // Join the words back into a string and return
+    return words.join(' ');
+}
+
+// Example usage:
+let text = "This is a test sentence with some forbidden words like apple and banana.";
+let forbidden = ["apple", "banana"];
+console.log(scrub(text, forbidden));
+
 
     // 👉 CHALLENGE 5 (bonus, NOT graded)
     function normalizePhoneNumber(num) {
